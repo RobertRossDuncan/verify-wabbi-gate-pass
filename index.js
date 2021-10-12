@@ -47,6 +47,8 @@ const processPullRequestEvent = async (pullRequest) => {
 			wabbiGateId,
 			ticketKeys);
 
+		console.log(`Gate status is ${gateStatus}`);
+
 		// Based on wabbi gate status process PR
 		if (gateStatus) {
 			core.setOutput('status', GATE_PASSED);
