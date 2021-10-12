@@ -62,7 +62,6 @@ const processPullRequestEvent = async (pullRequest) => {
 // Driver function to handle async calls
 Promise.resolve(
 	processPullRequestEvent(
-		github.context.payload.number,
 		github.context.payload.pull_request
 	)
 );
