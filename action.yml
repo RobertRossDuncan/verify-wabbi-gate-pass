@@ -1,5 +1,8 @@
 name: 'beta-test-wabbi-verify-gate-pass'
 description: 'Determine Wabbi gate pass status based on associated ticket keys'
+branding:
+  icon: 'check-square'  
+  color: 'green'
 inputs: 
   wabbiHost:
     description: 'URL to Wabbi site'
