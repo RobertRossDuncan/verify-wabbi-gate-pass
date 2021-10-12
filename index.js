@@ -2,7 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 const getTicketKeys = require('./getTicketKeys');
-const getWabbiGatePass = require('./getTicketKeys');
+const getWabbiGatePass = require('./getWabbiGatePass');
 
 const GATE_PASSED = 'Associated Wabbi Gate Passed';
 const GATE_FAILED = 'Associated Wabbi Gate Failed';
@@ -38,7 +38,6 @@ const processPullRequestEvent = async (pullRequest) => {
 			commitsUrl,
 			githubToken);
 
-		console.log('RRD');
 		console.log(`The ticket keys are ${ticketKeys}`); // Debug Remove the following debug code before release
 
 		// Obtain the Wabbi Gate status associated with ticket keys

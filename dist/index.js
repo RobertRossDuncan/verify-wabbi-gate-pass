@@ -55,6 +55,51 @@ module.exports = getTicketKeys;
 
 /***/ }),
 
+/***/ 6981:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const bent = __nccwpck_require__(3113);
+
+const getWabbiGatePass = async (wabbiHost, wabbiGateToken,
+	wabbiProjectId, wabbiGateId, ticketKeys) => {
+
+	// if not ticket keys array is empty or does not exist, the gate pass status is undefined
+	if (!Array.isArray(ticketKeys) || !ticketKeys.length) {
+		return undefined;
+	}
+
+	// Define wabbi gates endpoint
+	const authenticateUrl = `${wabbiHost}/auth/refresh`;
+	const postAuthenticate = bent(authenticateUrl, 'POST', 'json');
+	const gatesUrl = `${wabbiHost}/api/projects/${wabbiProjectId}/security-gates/${wabbiGateId}/passes`;
+	const postGates = bent(gatesUrl, 'POST', 'json');
+
+	// Define authentication header for authenticate endpoint
+	const authenticateHeader = {
+		Authorization: `Bearer ${wabbiGateToken}`
+	};
+
+	// Access wabbi gate with Jira Ticket Ids info and get gate status
+	let result = await postAuthenticate(null, {}, authenticateHeader);
+	const tokenHeader = {
+		'Content-Type': 'application/json',
+		'Content-Length': 0,
+		Authorization: `Bearer ${result.accessToken}`
+	};
+	const gatesBody = {
+		ticketKeys
+	};
+
+	result = await postGates(null, gatesBody, tokenHeader);
+	let status = result && result.lastPass ? result.lastPass.status : undefined;
+	return status;
+};
+
+module.exports = getWabbiGatePass;
+
+
+/***/ }),
+
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -9055,7 +9100,7 @@ const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 
 const getTicketKeys = __nccwpck_require__(5885);
-const getWabbiGatePass = __nccwpck_require__(5885);
+const getWabbiGatePass = __nccwpck_require__(6981);
 
 const GATE_PASSED = 'Associated Wabbi Gate Passed';
 const GATE_FAILED = 'Associated Wabbi Gate Failed';
@@ -9093,7 +9138,6 @@ const processPullRequestEvent = async (pullRequest) => {
 
 		console.log(`The ticket keys are ${ticketKeys}`); // Debug Remove the following debug code before release
 
-		console.log('test point3');
 		// Obtain the Wabbi Gate status associated with ticket keys
 		let gateStatus = await getWabbiGatePass(wabbiHost,
 			wabbiGateToken,
