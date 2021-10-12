@@ -27,4 +27,4 @@ outputs:
     description: 'Status of Wabbi gate pass'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'index.js'
