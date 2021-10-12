@@ -38,9 +38,9 @@ const processPullRequestEvent = async (pullRequest) => {
 			commitsUrl,
 			githubToken);
 
+		console.log('RRD');
 		console.log(`The ticket keys are ${ticketKeys}`); // Debug Remove the following debug code before release
 
-		console.log('test point3');
 		// Obtain the Wabbi Gate status associated with ticket keys
 		let gateStatus = await getWabbiGatePass(wabbiHost,
 			wabbiGateToken,
