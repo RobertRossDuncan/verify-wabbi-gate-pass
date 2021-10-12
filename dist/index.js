@@ -1,5 +1,4 @@
-require('./sourcemap-register.js');module.exports =
-/******/ (() => { // webpackBootstrap
+require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 885:
@@ -53,81 +52,6 @@ const getTicketKeys = async (jiraPrefixes, pullRequestTitle, pullRequestSource,
 };
 
 module.exports = getTicketKeys;
-
-/***/ }),
-
-/***/ 932:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const core = __nccwpck_require__(186);
-const github = __nccwpck_require__(716);
-
-const getTicketKeys = __nccwpck_require__(885);
-const getWabbiGatePass = __nccwpck_require__(885);
-
-const GATE_PASSED = 'Associated Wabbi Gate Passed';
-const GATE_FAILED = 'Associated Wabbi Gate Failed';
-
-// Function determining Wabbi Gate Status of associated pull request
-const processPullRequestEvent = async (pullRequest) => {
-	// Obtain pull request information
-	const commitsUrl = pullRequest._links.commits.href;
-	const pullRequestSource = pullRequest.head.ref;
-	const pullRequestTitle = pullRequest.title;
-
-	// Obtain wabbi configuration info
-	const wabbiHost = core.getInput('wabbiHost');
-	const wabbiProjectId = core.getInput('wabbiProjectId');
-	const jiraPrefixes = core.getInput('jiraPrefixes');
-	const wabbiGateId = core.getInput('wabbiGateId');
-	const wabbiGateToken = core.getInput('wabbiGateToken');
-
-	// Obtain github access info
-	const githubToken = core.getInput('githubToken');
-
-	// Debug Remove the following debug code before release
-	console.log(`The PR commits url is ${commitsUrl}`);
-	console.log(`The PR source is ${pullRequestSource}`);
-	console.log(`The PR title is ${pullRequestTitle}`);
-	// Debug Remove the above debug code before release
-
-	try {
-		// Get Jira ticket keys associated with the pull request
-		let ticketKeys = await getTicketKeys(jiraPrefixes,
-			pullRequestTitle,
-			pullRequestSource,
-			commitsUrl,
-			githubToken);
-
-		// Obtain the Wabbi Gate status associated with ticket keys
-		let gateStatus = await getWabbiGatePass(wabbiHost,
-			wabbiGateToken,
-			wabbiProjectId,
-			wabbiGateId,
-			ticketKeys);
-
-		// Based on wabbi gate status process PR
-		if (gateStatus) {
-			core.setOutput('status', GATE_PASSED);
-		}
-		else {
-			core.setOutput('status', GATE_FAILED);
-			core.setFailed(GATE_FAILED);
-		}
-	}
-	catch (error) {
-		core.setFailed(error.message);
-	}
-};
-
-// Driver function to handle async calls
-Promise.resolve(
-	processPullRequestEvent(
-		github.context.payload.number,
-		github.context.payload.pull_request
-	)
-);
-
 
 /***/ }),
 
@@ -1083,7 +1007,7 @@ module.exports = eval("require")("@actions/github");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("crypto");;
+module.exports = require("crypto");
 
 /***/ }),
 
@@ -1091,7 +1015,7 @@ module.exports = require("crypto");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("fs");;
+module.exports = require("fs");
 
 /***/ }),
 
@@ -1099,7 +1023,7 @@ module.exports = require("fs");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("http");;
+module.exports = require("http");
 
 /***/ }),
 
@@ -1107,7 +1031,7 @@ module.exports = require("http");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("https");;
+module.exports = require("https");
 
 /***/ }),
 
@@ -1115,7 +1039,7 @@ module.exports = require("https");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("os");;
+module.exports = require("os");
 
 /***/ }),
 
@@ -1123,7 +1047,7 @@ module.exports = require("os");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("path");;
+module.exports = require("path");
 
 /***/ }),
 
@@ -1131,7 +1055,7 @@ module.exports = require("path");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("stream");;
+module.exports = require("stream");
 
 /***/ }),
 
@@ -1139,7 +1063,7 @@ module.exports = require("stream");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("url");;
+module.exports = require("url");
 
 /***/ }),
 
@@ -1147,7 +1071,7 @@ module.exports = require("url");;
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("zlib");;
+module.exports = require("zlib");
 
 /***/ })
 
@@ -1159,8 +1083,9 @@ module.exports = require("zlib");;
 /******/ 	// The require function
 /******/ 	function __nccwpck_require__(moduleId) {
 /******/ 		// Check if module is in cache
-/******/ 		if(__webpack_module_cache__[moduleId]) {
-/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
@@ -1185,11 +1110,84 @@ module.exports = require("zlib");;
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
-/******/ 	__nccwpck_require__.ab = __dirname + "/";/************************************************************************/
-/******/ 	// module exports must be returned from runtime so entry inlining is disabled
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	return __nccwpck_require__(932);
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+const core = __nccwpck_require__(186);
+const github = __nccwpck_require__(716);
+
+const getTicketKeys = __nccwpck_require__(885);
+const getWabbiGatePass = __nccwpck_require__(885);
+
+const GATE_PASSED = 'Associated Wabbi Gate Passed';
+const GATE_FAILED = 'Associated Wabbi Gate Failed';
+
+// Function determining Wabbi Gate Status of associated pull request
+const processPullRequestEvent = async (pullRequest) => {
+	// Obtain pull request information
+	const commitsUrl = pullRequest._links.commits.href;
+	const pullRequestSource = pullRequest.head.ref;
+	const pullRequestTitle = pullRequest.title;
+
+	// Obtain wabbi configuration info
+	const wabbiHost = core.getInput('wabbiHost');
+	const wabbiProjectId = core.getInput('wabbiProjectId');
+	const jiraPrefixes = core.getInput('jiraPrefixes');
+	const wabbiGateId = core.getInput('wabbiGateId');
+	const wabbiGateToken = core.getInput('wabbiGateToken');
+
+	// Obtain github access info
+	const githubToken = core.getInput('githubToken');
+
+	// Debug Remove the following debug code before release
+	console.log(`The PR commits url is ${commitsUrl}`);
+	console.log(`The PR source is ${pullRequestSource}`);
+	console.log(`The PR title is ${pullRequestTitle}`);
+	// Debug Remove the above debug code before release
+
+	try {
+		// Get Jira ticket keys associated with the pull request
+		let ticketKeys = await getTicketKeys(jiraPrefixes,
+			pullRequestTitle,
+			pullRequestSource,
+			commitsUrl,
+			githubToken);
+
+		// Obtain the Wabbi Gate status associated with ticket keys
+		let gateStatus = await getWabbiGatePass(wabbiHost,
+			wabbiGateToken,
+			wabbiProjectId,
+			wabbiGateId,
+			ticketKeys);
+
+		// Based on wabbi gate status process PR
+		if (gateStatus) {
+			core.setOutput('status', GATE_PASSED);
+		}
+		else {
+			core.setOutput('status', GATE_FAILED);
+			core.setFailed(GATE_FAILED);
+		}
+	}
+	catch (error) {
+		core.setFailed(error.message);
+	}
+};
+
+// Driver function to handle async calls
+Promise.resolve(
+	processPullRequestEvent(
+		github.context.payload.number,
+		github.context.payload.pull_request
+	)
+);
+
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map
