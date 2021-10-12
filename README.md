@@ -28,8 +28,7 @@ on: [pull_request]
 jobs:
   pull_request_job:
     runs-on: ubuntu-latest
-    name: A job to manage a pull request merge
-    environment: wabbi
+    name: A job to process pull request validation
     steps:
       - name: proccess pull request
         id: process_pr
