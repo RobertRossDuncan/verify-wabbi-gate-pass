@@ -19,7 +19,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+    - name: proccess pull request
+      id: process_pr
     - uses: actions/checkout@v2
     - uses: ./
       with:
-        milliseconds: 1000
+        wabbiHost: https://qa.wabbi.io
+        wabbiProjectId: 1
+        jiraPrefixes: AB,CD,EF
+        wabbiGateId: 1
+        wabbiGateToken: ${{ secrets.GATE_TOKEN }}
+        githubToken: ${{ secrets.GITHUB_TOKEN }}
+    - name: pull request status
+      run: echo "pr process status ${{ steps.process_pr.outputs.status }}"
