@@ -3,6 +3,11 @@ const bent = require('bent');
 const getWabbiGatePass = async (wabbiHost, wabbiGateToken,
 	wabbiProjectId, wabbiGateId, ticketKeys) => {
 
+	// if not ticket keys array is empty or does not exist, the gate pass status is undefined
+	if (!Array.isArray(ticketKeys) || !ticketKeys.length) {
+		return undefined;
+	}
+
 	// Define wabbi gates endpoint
 	const authenticateUrl = `${wabbiHost}/auth/refresh`;
 	const postAuthenticate = bent(authenticateUrl, 'POST', 'json');
