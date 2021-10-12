@@ -1,7 +1,7 @@
 {
-  "name": "javascript-action",
+  "name": "verify-wabbi-gate-pass",
   "version": "1.0.0",
-  "description": "JavaScript Action Template",
+  "description": "Verify status of Wabbi Gate for Associated Ticket Keys",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
@@ -11,19 +11,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git+https://github.com/wabbisoft/verify-wabbi-gate-pass.git"
   },
   "keywords": [
     "GitHub",
     "Actions",
-    "JavaScript"
+    "Wabbi"
   ],
   "author": "",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
-  },
-  "homepage": "https://github.com/actions/javascript-action#readme",
+  "homepage": "https://wabbisoft.com",
   "dependencies": {
     "@actions/core": "^1.2.5",
     "bent": "^7.3.12"
