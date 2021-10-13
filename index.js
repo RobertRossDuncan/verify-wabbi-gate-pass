@@ -31,12 +31,6 @@ const processPullRequestEvent = async (pullRequest) => {
 	// Obtain github access info
 	const githubToken = core.getInput('githubToken');
 
-	// Debug Remove the following debug code before release
-	console.log(`The PR commits url is ${commitsUrl}`);
-	console.log(`The PR source is ${pullRequestSource}`);
-	console.log(`The PR title is ${pullRequestTitle}`);
-	// Debug Remove the above debug code before release
-
 	try {
 		// Get Jira ticket keys associated with the pull request
 		let ticketKeys = await getTicketKeys(jiraPrefixes,
@@ -45,7 +39,8 @@ const processPullRequestEvent = async (pullRequest) => {
 			commitsUrl,
 			githubToken);
 
-		console.log(`The ticket keys are ${ticketKeys}`); // Debug Remove the following debug code before release
+		// Display extracted ticket keys within action console
+		console.log(`The ticket keys are ${ticketKeys}`);
 
 		// Obtain the Wabbi Gate status associated with ticket keys
 		let gateStatus = await getWabbiGatePass(wabbiHost,
