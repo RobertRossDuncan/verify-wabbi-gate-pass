@@ -6,16 +6,27 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 const bent = __nccwpck_require__(3113);
 
+/**
+ * Given a list of Jira project prefixes, returns an array of unique ticket keys
+ * contained in the pull request title, source branch name and commit messages.
+ * @param {string} jiraPrefixes comma separated list of Jira project prefix codes
+ * @param {string} pullRequestTitle GitHub title for pull request
+ * @param {string} pullRequestSource GitHub source branch for pull request
+ * @param {string} commitsUrl URL for Jira endpoint used to obtain commit
+ * messages associated with pull request
+ * @param {string} githubToken Authentiction token to access GitHub endpoints
+ * @returns {Array} Jira ticket keys
+ */
 const getTicketKeys = async (jiraPrefixes, pullRequestTitle, pullRequestSource,
 	commitsUrl, githubToken) => {
 
-	// Define regular expressions to obtain Jira Ticket IDs
+	// Define regular expressions patterns to find Jira Ticket IDs
 	const prefixes = jiraPrefixes.replace(/,/g, '|');
 	const ticketKeyAtBeginning = new RegExp(`^(${prefixes})-\\d+`, 'g');
 	const ticketKeyAnywhere = new RegExp(`\\b(${prefixes})-\\d+`, 'g');
 
+	// Define endpoint used to obtain commit messages
 	const getCommits = bent(commitsUrl, 'GET', 'json');
-
 	const gitHeader = {
 		Accept: 'application/vnd.github.v3+json',
 		'User-Agent': 'node/12',
@@ -44,6 +55,8 @@ const getTicketKeys = async (jiraPrefixes, pullRequestTitle, pullRequestSource,
 		if (ticketKeyInTitle) {
 			ticketKeys = ticketKeys.concat(ticketKeyInTitle);
 		}
+
+		// remove duplicates and return array of ticket keys
 		return [...new Set(ticketKeys)];
 	}
 	catch (error) {
@@ -60,10 +73,21 @@ module.exports = getTicketKeys;
 
 const bent = __nccwpck_require__(3113);
 
+/**
+ * Given information to access a wabbi gate endpoint and an array of ticket keys
+ * associated with the gate, returns the gate pass status
+ * @param {string} wabbiHost scheme and host support for wabbi auth services.
+ * @param {string} wabbiGateToken Authentication token to access wabbi auth endpoint
+ * @param {string} wabbiProjectId Id of project as identified in the wabbi database
+ * @param {string} wabbiGateId Id of Wabbi gate associated with ticket keys
+ * @param {Array.<string>} ticketKeys ticket keys associated with wabbi gate
+ * @returns {'PASSED' | 'FAILED' | undefined} wabbi gate pass status. The status
+ * is undefined if not ticket keys are provided.
+ */
 const getWabbiGatePass = async (wabbiHost, wabbiGateToken,
 	wabbiProjectId, wabbiGateId, ticketKeys) => {
 
-	// if not ticket keys array is empty or does not exist, the gate pass status is undefined
+	// if ticket keys array is empty or does not exist, the gate pass status is undefined
 	if (!Array.isArray(ticketKeys) || !ticketKeys.length) {
 		return undefined;
 	}
@@ -79,7 +103,7 @@ const getWabbiGatePass = async (wabbiHost, wabbiGateToken,
 		Authorization: `Bearer ${wabbiGateToken}`
 	};
 
-	// Access wabbi gate with Jira Ticket Ids info and get gate status
+	// Access wabbi gate with Jira Ticket keys info and get gate status
 	let result = await postAuthenticate(null, {}, authenticateHeader);
 	const tokenHeader = {
 		'Content-Type': 'application/json',
@@ -9103,9 +9127,16 @@ const getTicketKeys = __nccwpck_require__(5885);
 const getWabbiGatePass = __nccwpck_require__(6981);
 
 const GATE_PASSED = 'Associated Wabbi Gate Passed';
+const NO_GATE_STATUS = 'No Associated Wabbi Gate Status';
 const GATE_FAILED = 'Associated Wabbi Gate Failed';
+const PASSED_STATUS = 'PASSED';
 
-// Function determining Wabbi Gate Status of associated pull request
+/**
+ * This GitHub action determines the ticket keys associated with the pull request.
+ * The action displays the Wabbi gate status for the associated ticket keys.
+ * The action fails if the Wabbi gate status is FAILED
+ * @param {Object} pullRequest GitHub pull request associated with action
+ */
 const processPullRequestEvent = async (pullRequest) => {
 	// Obtain pull request information
 	const commitsUrl = pullRequest._links.commits.href;
@@ -9145,9 +9176,12 @@ const processPullRequestEvent = async (pullRequest) => {
 			wabbiGateId,
 			ticketKeys);
 
-		// Based on wabbi gate status process PR
-		if (gateStatus) {
+		// Define Wabbi gate status and action pass / fail
+		if (gateStatus  === PASSED_STATUS) {
 			core.setOutput('status', GATE_PASSED);
+		}
+		else if (gateStatus === undefined || gateStatus === null) {
+			core.setOutput('status', NO_GATE_STATUS);
 		}
 		else {
 			core.setOutput('status', GATE_FAILED);
