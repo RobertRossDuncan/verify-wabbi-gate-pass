@@ -5,9 +5,16 @@ const getTicketKeys = require('./getTicketKeys');
 const getWabbiGatePass = require('./getWabbiGatePass');
 
 const GATE_PASSED = 'Associated Wabbi Gate Passed';
+const NO_GATE_STATUS = 'No Associated Wabbi Gate Status';
 const GATE_FAILED = 'Associated Wabbi Gate Failed';
+const PASSED_STATUS = 'PASSED';
 
-// Function determining Wabbi Gate Status of associated pull request
+/**
+ * This GitHub action determines the ticket keys associated with the pull request.
+ * The action displays the Wabbi gate status for the associated ticket keys.
+ * The action fails if the Wabbi gate status is FAILED
+ * @param {Object} pullRequest GitHub pull request associated with action
+ */
 const processPullRequestEvent = async (pullRequest) => {
 	// Obtain pull request information
 	const commitsUrl = pullRequest._links.commits.href;
@@ -47,9 +54,12 @@ const processPullRequestEvent = async (pullRequest) => {
 			wabbiGateId,
 			ticketKeys);
 
-		// Based on wabbi gate status process PR
-		if (gateStatus) {
+		// Define Wabbi gate status and action pass / fail
+		if (gateStatus  === PASSED_STATUS) {
 			core.setOutput('status', GATE_PASSED);
+		}
+		else if (gateStatus === undefined || gateStatus === null) {
+			core.setOutput('status', NO_GATE_STATUS);
 		}
 		else {
 			core.setOutput('status', GATE_FAILED);

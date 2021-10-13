@@ -1,9 +1,20 @@
 const bent = require('bent');
 
+/**
+ * Given information to access a wabbi gate endpoint and an array of ticket keys
+ * associated with the gate, returns the gate pass status
+ * @param {string} wabbiHost scheme and host support for wabbi auth services.
+ * @param {string} wabbiGateToken Authentication token to access wabbi auth endpoint
+ * @param {string} wabbiProjectId Id of project as identified in the wabbi database
+ * @param {string} wabbiGateId Id of Wabbi gate associated with ticket keys
+ * @param {Array.<string>} ticketKeys ticket keys associated with wabbi gate
+ * @returns {'PASSED' | 'FAILED' | undefined} wabbi gate pass status. The status
+ * is undefined if not ticket keys are provided.
+ */
 const getWabbiGatePass = async (wabbiHost, wabbiGateToken,
 	wabbiProjectId, wabbiGateId, ticketKeys) => {
 
-	// if not ticket keys array is empty or does not exist, the gate pass status is undefined
+	// if ticket keys array is empty or does not exist, the gate pass status is undefined
 	if (!Array.isArray(ticketKeys) || !ticketKeys.length) {
 		return undefined;
 	}
@@ -19,7 +30,7 @@ const getWabbiGatePass = async (wabbiHost, wabbiGateToken,
 		Authorization: `Bearer ${wabbiGateToken}`
 	};
 
-	// Access wabbi gate with Jira Ticket Ids info and get gate status
+	// Access wabbi gate with Jira Ticket keys info and get gate status
 	let result = await postAuthenticate(null, {}, authenticateHeader);
 	const tokenHeader = {
 		'Content-Type': 'application/json',

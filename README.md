@@ -1,7 +1,8 @@
 # Wabbi Manage PR JavaScript action
 Based on the status of Wabbi gates associated with the Jira ticket keys defined 
 in the commit's messages, the pull request's title and the pull request's source
-branch, this action will provide that Wabbi Gate status.
+branch, this action will display the Wabbi gate status. If the gate status is
+FAILED, the action will fail.
 
 ## Inputs
 ### `wabbiHost`
@@ -19,7 +20,7 @@ branch, this action will provide that Wabbi Gate status.
 
 ## Outputs
 ### `status`
-The status of the completion of the pull request.
+The status of the Wabbi gate pass for the associated ticket keys.
 
 ## Example usage
 ```
@@ -34,7 +35,7 @@ jobs:
         id: process_pr
         uses: RobertRossDuncan/pr_sandbox@master
         with:
-          wabbiHost: https://qa.wabbi.io
+          wabbiHost: https://symphony.wabbi.io
           wabbiProjectId: 1
           jiraPrefixes: AB,CD,EF
           wabbiGateId: 1

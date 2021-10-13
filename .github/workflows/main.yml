@@ -1,5 +1,5 @@
 name: "deploy"
-on:
+on: 
   pull_request:
   push:
     branches:
@@ -21,7 +21,7 @@ jobs:
     - run: npm ci
     - run: npm test
 
-  # package index.js and modules into one distribution file dist/index.js
+  # package index.js and modules into one distribution file - dist/index.js
   prepare:
     runs-on: ubuntu-latest
     steps:
