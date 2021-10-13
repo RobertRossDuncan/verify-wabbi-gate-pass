@@ -110,8 +110,10 @@ const getWabbiGatePass = async (wabbiHost, wabbiGateToken,
 		'Content-Length': 0,
 		Authorization: `Bearer ${result.accessToken}`
 	};
+	// Stringiffy the ticket key array for wabbi gates pass request body
+	// example ['AB-1', 'AB-2', 'AB-3'] becomes '["AB-1","AB-2","AB-3"]
 	const gatesBody = {
-		ticketKeys
+		ticketKeys: `["${ticketKeys.join('","')}"]`
 	};
 
 	result = await postGates(null, gatesBody, tokenHeader);
