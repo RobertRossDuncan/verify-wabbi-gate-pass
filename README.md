@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: proccess pull request
         id: process_pr
-        uses: RobertRossDuncan/pr_sandbox@master
+        uses: RobertRossDuncan/verify-wabbi-gate-pass@main
         with:
           wabbiHost: https://symphony.wabbi.io
           wabbiProjectId: 1
